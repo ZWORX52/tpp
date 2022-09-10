@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(tpp)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20")
 set(SOURCES main.cpp)
 set(INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -10,17 +11,11 @@ set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${INCLUDE})
 add_executable(tpp ${SOURCES})
 
-# add_custom_command(
-#     OUTPUT ${INCLUDE} ${SRC}
-#     COMMAND python -m glad --profile compatibility --out-path ../ --generator c --quiet
-#     VERBATIM)
-# add_custom_target(glad_headers ALL DEPENDS ${src}/glad.c)
-add_custom_target(
-    generate_glad
-    COMMAND python -m glad --profile compatibility --out-path ../ --generator c --quiet VERBATIM
-    BYPRODUCTS ${SRC}/glad.c)
+add_custom_command(
+    OUTPUT ${SRC}/glad.c
+    COMMAND python -m glad --profile compatibility --out-path ../ --generator c --quiet
+    VERBATIM)
 add_library(glad ${SRC}/glad.c)
-add_dependencies(glad generate_glad)
 add_dependencies(tpp glad)
 
 target_link_libraries(tpp glfw)

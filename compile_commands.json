@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/zworx52/tpp/build",
+  "command": "/usr/bin/c++ -I/home/zworx52/tpp/include -Wall -Werror -Wextra -std=c++11 -std=gnu++20 -o CMakeFiles/tpp.dir/main.cpp.o -c /home/zworx52/tpp/main.cpp",
+  "file": "/home/zworx52/tpp/main.cpp"
+},
+{
+  "directory": "/home/zworx52/tpp/build",
+  "command": "/usr/bin/gcc -I/home/zworx52/tpp/include -Wall -Werror -Wextra -o CMakeFiles/glad.dir/src/glad.c.o -c /home/zworx52/tpp/src/glad.c",
+  "file": "/home/zworx52/tpp/src/glad.c"
+}
+]
