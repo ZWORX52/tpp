@@ -37,3 +37,7 @@ src/
 
 # CMake build dirs
 build*/
+
+# Cache ig
+.cache/
+
