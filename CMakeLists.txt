@@ -7,18 +7,25 @@ set(SOURCES main.cpp)
 set(INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+include_directories(${INCLUDE})
 add_executable(tpp ${SOURCES})
 
-add_custom_command(
-    OUTPUT ${INCLUDE}
-    COMMAND python -m glad --profile compatibility --out-path ../ --generator c --quiet
-            && mv ${SRC}/glad.c ${INCLUDE}/
-    VERBATIM)
-add_custom_target(glad_headers ALL DEPENDS ${INCLUDE})
-add_dependencies(tpp glad_headers)
+# add_custom_command(
+#     OUTPUT ${INCLUDE} ${SRC}
+#     COMMAND python -m glad --profile compatibility --out-path ../ --generator c --quiet
+#     VERBATIM)
+# add_custom_target(glad_headers ALL DEPENDS ${src}/glad.c)
+add_custom_target(
+    generate_glad
+    COMMAND python -m glad --profile compatibility --out-path ../ --generator c --quiet VERBATIM
+    BYPRODUCTS ${SRC}/glad.c)
+add_library(glad ${SRC}/glad.c)
+add_dependencies(glad generate_glad)
+add_dependencies(tpp glad)
 
 target_link_libraries(tpp glfw)
 target_link_libraries(tpp GL)
+target_link_libraries(tpp glad)
 
 if(MSVC)
     add_compile_options(/W4 /WX)

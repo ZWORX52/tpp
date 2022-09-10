@@ -33,6 +33,7 @@
 
 # Libraries
 include/
+src/
 
 # CMake build dirs
 build*/
