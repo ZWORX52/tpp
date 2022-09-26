@@ -17,7 +17,7 @@ void main() {
     int block_width = board_dims.x / blocks_in_row;
     int block_height = board_dims.y / 20;
 
-    ivec2 board_coords = ivec2(gl_FragCoord.xy) - board_loc;
+    ivec2 board_coords = ivec2(gl_FragCoord.x - board_loc.x, gl_FragCoord.y - board_loc.y);
 
     if (gl_FragCoord.x < board_loc.x || gl_FragCoord.y < board_loc.y ||
         gl_FragCoord.x > board_loc.x + board_dims.x ||
@@ -26,8 +26,8 @@ void main() {
         return;
     }
 
-    switch (board[(board_coords.x / block_width) * blocks_in_row +
-                  board_coords.y / block_height]) {
+    switch (board[(board_coords.y / block_height) * blocks_in_row +
+                  board_coords.x / block_width]) {
         // using the same skin format as tetrio and, by extension, tetrio+ so
         // that I don't have to make one up and so that I can easily import
         // textures made for them. :)
