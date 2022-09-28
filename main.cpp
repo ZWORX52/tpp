@@ -1,15 +1,16 @@
 // NOLINT(legal/copyright)
-#include "./main.hpp"
-
 #include <glad/glad.h>
 // Space is required because otherwise some formatter reorganizes them and they
-// have a required order so L
+// have a required order so :|
 #include <GLFW/glfw3.h>
 
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <thread>
+
+#include "./engine.hpp"
 
 const int rectangle_indices[] = {0, 1, 3, 1, 2, 3};
 const int START_SCREEN_WIDTH = 240, START_SCREEN_HEIGHT = 480;
@@ -139,16 +140,9 @@ int main() {
     float board_attributes[] = {1.0f,  1.0f,  0.0f, 1.0f,  -1.0f, 0.0f,
                                 -1.0f, -1.0f, 0.0f, -1.0f, 1.0f,  0.0f};
     // i know that uint is inefficient. stfu.
-    unsigned int board[] = {
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3,
-        3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5,
-        5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-        7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    unsigned int board[200] = { 0 };
+
+    std::thread engine(Engine::start, board);
 
     unsigned int vao, vbo, ebo;
     glGenVertexArrays(1, &vao);
@@ -186,6 +180,9 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    Engine::finish = true;
+    engine.join();
 
     glfwTerminate();
 }
