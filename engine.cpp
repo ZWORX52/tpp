@@ -126,7 +126,9 @@ void start(unsigned int *in_board) {
                         /* std::cout << "das activated, left" << std::endl; */
                         if (std::chrono::system_clock::now() > DAS_time) {
                             // move piece left, update das time (add ARR)
-                            std::cout << "move piece " << (move_right ? "right" : "left") << " (das)" << std::endl;
+                            std::cout << "move piece "
+                                      << (move_right ? "right" : "left")
+                                      << " (das)" << std::endl;
                             DAS_time = std::chrono::system_clock::now() + ARR;
                         }
                     }
