@@ -1,7 +1,8 @@
 // NOLINT(legal/copyright)
 #include <glad/glad.h>
-// Space is required because otherwise some formatter reorganizes them and they
-// have a required order so :|
+// spaces are required because otherwise neoformat will sort them
+// lexicographically and that angers cpplint because of the header order. it's
+// also more organized so that's a plus
 #include <GLFW/glfw3.h>
 
 #include <fstream>
@@ -16,6 +17,7 @@ const int rectangle_indices[] = {0, 1, 3, 1, 2, 3};
 const int START_SCREEN_WIDTH = 240, START_SCREEN_HEIGHT = 480;
 // how else do you propose I do this?
 int screen_width = START_SCREEN_WIDTH, screen_height = START_SCREEN_HEIGHT;
+GLFWwindow *window;
 
 void glfw_error_callback(int code, const char *msg) {
     std::cout << "GLFW Error #" << code << ": " << msg << std::endl;
@@ -109,8 +111,8 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-    GLFWwindow *window = glfwCreateWindow(
-        START_SCREEN_WIDTH, START_SCREEN_HEIGHT, "T++", NULL, NULL);
+    window = glfwCreateWindow(START_SCREEN_WIDTH, START_SCREEN_HEIGHT, "T++",
+                              NULL, NULL);
     if (!window) {
         std::cout << "Failed to create window" << std::endl;
         int error = glfwGetError(NULL);
@@ -122,6 +124,7 @@ int main() {
         return 1;
     }
     glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
+    glfwSetKeyCallback(window, Engine::key_callback);
     glfwMakeContextCurrent(window);
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize OpenGL context" << std::endl;
@@ -140,7 +143,7 @@ int main() {
     float board_attributes[] = {1.0f,  1.0f,  0.0f, 1.0f,  -1.0f, 0.0f,
                                 -1.0f, -1.0f, 0.0f, -1.0f, 1.0f,  0.0f};
     // i know that uint is inefficient. stfu.
-    unsigned int board[200] = { 0 };
+    unsigned int board[200] = {0};
 
     std::thread engine(Engine::start, board);
 

@@ -5,9 +5,9 @@ project(tpp)
 # had to manually remake compile_commands.json for some reason
 # :shruggie:
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++20 -Og -g")
 set(CXX "/usr/bin/g++")
-set(SOURCES main.cpp engine.cpp)
+set(SOURCES main.cpp engine.cpp keybinds.cpp)
 set(INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
