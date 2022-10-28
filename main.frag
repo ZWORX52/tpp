@@ -6,18 +6,19 @@ layout(pixel_center_integer) in vec4 gl_FragCoord;
 
 out vec4 fragment_color;
 
-uniform uint board[200];
+uniform uint board[220];
 uniform ivec2 board_dims;
 uniform ivec2 board_loc;
 
 void main() {
-    uvec4 color = uvec4(0, 0, 0, 255);
+    uvec4 color = uvec4(0, 0, 0, 0);
 
     int blocks_in_row = 10;
     int block_width = board_dims.x / blocks_in_row;
-    int block_height = board_dims.y / 20;
+    int block_height = board_dims.y / 22;
 
-    ivec2 board_coords = ivec2(gl_FragCoord.x - board_loc.x, gl_FragCoord.y - board_loc.y);
+    ivec2 board_coords = ivec2((gl_FragCoord.x - board_loc.x) / block_width,
+                               (gl_FragCoord.y - board_loc.y) / block_height);
 
     if (gl_FragCoord.x < board_loc.x || gl_FragCoord.y < board_loc.y ||
         gl_FragCoord.x > board_loc.x + board_dims.x ||
@@ -26,13 +27,15 @@ void main() {
         return;
     }
 
-    switch (board[(board_coords.y / block_height) * blocks_in_row +
-                  board_coords.x / block_width]) {
+    switch (board[board_coords.y * blocks_in_row + board_coords.x]) {
         // using the same skin format as tetrio and, by extension, tetrio+ so
         // that I don't have to make one up and so that I can easily import
         // textures made for them. :)
     case 0:
-        color = uvec4(0, 0, 0, 255);
+        /* color = uvec4(0, 0, 0, 255); */
+        /* if (board_coords.y / block_height > 20) { */
+        color = uvec4(0, 0, 0, 0);
+        /* } */
         break;
     case 1:
         color = uvec4(240, 0, 47, 255);
@@ -69,7 +72,7 @@ void main() {
         break;
     // none for now (the x that appears when... smth)
     default:
-        color = uvec4(0, 0, 0, 255);
+        color = uvec4(0, 0, 255, 255);
         break;
     }
     fragment_color = vec4(color.x / 255.0, color.y / 255.0, color.z / 255.0,

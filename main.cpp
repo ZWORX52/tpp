@@ -140,10 +140,12 @@ int main() {
         return 1;
     }
     // starting top right, going clockwise.
-    float board_attributes[] = {1.0f,  1.0f,  0.0f, 1.0f,  -1.0f, 0.0f,
-                                -1.0f, -1.0f, 0.0f, -1.0f, 1.0f,  0.0f};
+    float board_attributes[] = {0.8f, 0.8f,  0.0f, 0.8,   -0.8f, 0.0f,
+                                -0.8, -0.8f, 0.0f, -0.8f, 0.8f,  0.0f};
+    float background_attributes[] = {1.0f,  1.0f,  0.0f, 1.0f,  -1.0f, 0.0f,
+                                     -1.0f, -1.0f, 0.0f, -1.0f, 1.0f,  0.0f};
     // i know that uint is inefficient. stfu.
-    unsigned int board[200] = {0};
+    unsigned int board[220] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
 
     std::thread engine(Engine::start, board);
 
@@ -155,12 +157,24 @@ int main() {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(board_attributes), board_attributes,
-                 GL_STATIC_DRAW);
+                 GL_DYNAMIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rectangle_indices),
                  rectangle_indices, GL_STATIC_DRAW);
 
     // position attributes!
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+
+    unsigned int background_vao, background_vbo;
+    glGenVertexArrays(1, &background_vao);
+    glGenBuffers(1, &background_vbo);
+
+    glBindVertexArray(background_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, background_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(background_attributes),
+                 background_attributes, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
     glEnableVertexAttribArray(0);
 
@@ -172,13 +186,16 @@ int main() {
 
         glUseProgram(program);
 
-        glUniform1uiv(glGetUniformLocation(program, "board"), 200, board);
-        glUniform2i(glGetUniformLocation(program, "board_dims"), screen_width,
-                    screen_height);
-        glUniform2i(glGetUniformLocation(program, "board_loc"), 0, 0);
-        /* screen_width / 4, screen_height / 4); */
+        glUniform1uiv(glGetUniformLocation(program, "board"), 220, board);
+        glUniform2i(glGetUniformLocation(program, "board_dims"),
+                    (screen_width * 4) / 5, (screen_height * 4) / 5);
+        glUniform2i(glGetUniformLocation(program, "board_loc"),
+                    screen_width / 10, screen_height / 10);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        /* glBindVertexArray(background_vao); */
+        /* glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); */
 
         glfwSwapBuffers(window);
         glfwPollEvents();
