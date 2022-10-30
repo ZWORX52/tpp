@@ -30,77 +30,7 @@ void glfw_framebuffer_size_callback(__attribute__((unused)) GLFWwindow *window,
     screen_height = height;
 }
 
-unsigned int load_shader(const std::string &path_vertex,
-                         const std::string &path_fragment) {
-    std::string vertex_code, fragment_code;
-    std::ifstream vertex_file, fragment_file;
-
-    // throw exceptions please
-    vertex_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fragment_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try {
-        vertex_file.open(path_vertex);
-        fragment_file.open(path_fragment);
-        std::stringstream vertex_stream, fragment_stream;
-        // read files
-        vertex_stream << vertex_file.rdbuf();
-        fragment_stream << fragment_file.rdbuf();
-        vertex_file.close();
-        fragment_file.close();
-        vertex_code = vertex_stream.str();
-        fragment_code = fragment_stream.str();
-    } catch (const std::ifstream::failure &e) {
-        std::cout << "Failed reading shader files " << path_vertex << " and "
-                  << path_fragment << " (error code #" << e.code()
-                  << "):" << std::endl
-                  << e.what() << std::endl;
-        return 0;
-    }
-
-    int success;
-    char log[1024];
-
-    unsigned int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    // Because you can't take the address of an rvalue :P
-    const char *vertex_code_c_str = vertex_code.c_str();
-    glShaderSource(vertex_shader, 1, &vertex_code_c_str, NULL);
-    glCompileShader(vertex_shader);
-    // any compile errors?
-    glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertex_shader, 1024, NULL, log);
-        std::cout << "Vertex shader compilation failed: " << log << std::endl;
-        return 0;
-    }
-
-    unsigned int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    const char *fragment_code_c_str = fragment_code.c_str();
-    glShaderSource(fragment_shader, 1, &fragment_code_c_str, NULL);
-    glCompileShader(fragment_shader);
-    // any compile errors here?
-    glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragment_shader, 1024, NULL, log);
-        std::cout << "Fragment shader compilation failed: " << log << std::endl;
-        return 0;
-    }
-
-    unsigned int program_id = glCreateProgram();
-    glAttachShader(program_id, vertex_shader);
-    glAttachShader(program_id, fragment_shader);
-    glLinkProgram(program_id);
-    // any linking errors?
-    glGetProgramiv(program_id, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(program_id, 1024, NULL, log);
-        std::cout << "Program linking failed: " << log << std::endl;
-        return 0;
-    }
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
-
-    return program_id;
-}
+// nyeh
 
 int main() {
     glfwSetErrorCallback(glfw_error_callback);
@@ -134,7 +64,11 @@ int main() {
     glViewport(0, 0, START_SCREEN_WIDTH, START_SCREEN_HEIGHT);
     glEnable(GL_DEBUG_OUTPUT);
 
+    unsigned int board[220] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+    std::thread engine(Engine::start, board);
+
     // gimme dat shader plz
+    /*
     unsigned int program = load_shader("../main.vert", "../main.frag");
     if (!program) {
         return 1;
@@ -144,10 +78,6 @@ int main() {
                                 -0.8, -0.8f, 0.0f, -0.8f, 0.8f,  0.0f};
     float background_attributes[] = {1.0f,  1.0f,  0.0f, 1.0f,  -1.0f, 0.0f,
                                      -1.0f, -1.0f, 0.0f, -1.0f, 1.0f,  0.0f};
-    // i know that uint is inefficient. stfu.
-    unsigned int board[220] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
-
-    std::thread engine(Engine::start, board);
 
     unsigned int vao, vbo, ebo;
     glGenVertexArrays(1, &vao);
@@ -180,6 +110,8 @@ int main() {
 
     glUseProgram(program);
 
+    */
+
     while (!glfwWindowShouldClose(window)) {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -193,9 +125,6 @@ int main() {
                     screen_width / 10, screen_height / 10);
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-        /* glBindVertexArray(background_vao); */
-        /* glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); */
 
         glfwSwapBuffers(window);
         glfwPollEvents();
