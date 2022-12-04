@@ -116,15 +116,15 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(program);
+        /* glUseProgram(program); */
 
-        glUniform1uiv(glGetUniformLocation(program, "board"), 220, board);
-        glUniform2i(glGetUniformLocation(program, "board_dims"),
-                    (screen_width * 4) / 5, (screen_height * 4) / 5);
-        glUniform2i(glGetUniformLocation(program, "board_loc"),
-                    screen_width / 10, screen_height / 10);
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        /* glUniform1uiv(glGetUniformLocation(program, "board"), 220, board); */
+        /* glUniform2i(glGetUniformLocation(program, "board_dims"), */
+        /*             (screen_width * 4) / 5, (screen_height * 4) / 5); */
+        /* glUniform2i(glGetUniformLocation(program, "board_loc"), */
+        /*             screen_width / 10, screen_height / 10); */
+        /* glBindVertexArray(vao); */
+        /* glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); */
 
         glfwSwapBuffers(window);
         glfwPollEvents();
